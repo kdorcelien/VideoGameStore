@@ -84,6 +84,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
 
             int rowsAffected = statement.executeUpdate();
 
+            System.out.println(statement);
             if (rowsAffected > 0) {
                 // Retrieve the generated keys
                 ResultSet generatedKeys = statement.getGeneratedKeys();
