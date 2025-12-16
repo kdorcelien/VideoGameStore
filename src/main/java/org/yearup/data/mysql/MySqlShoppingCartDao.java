@@ -9,10 +9,7 @@ import org.yearup.models.ShoppingCartItem;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +61,22 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
     @Override
     public void addProduct(int userId, int productId) {
+        String sql = " INSERT INTO shopping_cart(user_id, product_id, quantity) " +
+                " VALUES (?, ?, 1) ";
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql))
+        {
+            statement.setInt(1, userId);
+            statement.setInt(2, productId);
+
+           statement.executeUpdate();
+
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
 
     }
 
