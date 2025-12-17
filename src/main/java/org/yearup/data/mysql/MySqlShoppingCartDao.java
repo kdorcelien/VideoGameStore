@@ -2,16 +2,11 @@ package org.yearup.data.mysql;
 
 import org.springframework.stereotype.Component;
 import org.yearup.data.ShoppingCartDao;
-import org.yearup.models.Category;
-import org.yearup.models.Product;
-import org.yearup.models.ShoppingCart;
-import org.yearup.models.ShoppingCartItem;
+import org.yearup.models.*;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Component
@@ -83,11 +78,41 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     @Override
     public void updateQuantity(int userId, int productId, int quantity) {
 
+        String sql = " UPDATE shopping_cart" +
+                "SET quantity = ? " +
+                "WHERE user_id = ? AND product_id = ? " ;
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql))
+        {
+            statement.setInt(1,quantity);
+            statement.setInt(2, userId);
+            statement.setInt(3, productId);
+
+            statement.executeUpdate();
+
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
     public void clearCart(int userId) {
+        String sql = "DELETE FROM shopping_cart WHERE user_id = ?";
 
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql))
+        {
+            statement.setInt(1, userId);
+            statement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
 

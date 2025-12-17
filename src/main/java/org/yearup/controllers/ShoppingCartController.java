@@ -57,15 +57,25 @@ public class ShoppingCartController {
         try {
             String username = principal.getName();
             User user = userDao.getByUserName(username);
+
+            if (user == null) {
+                throw new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "User not found"
+                );
+            }
+
             int userId = user.getId();
 
-            shoppingCartDao.addProduct(userId, id);
+             shoppingCartDao.addProduct(userId, id);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     "Oops... our bad."
             );
         }
+
     }
 
 
