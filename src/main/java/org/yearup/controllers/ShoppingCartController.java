@@ -53,7 +53,7 @@ public class ShoppingCartController {
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
     @PostMapping("/products/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addProduct(@PathVariable int id, Principal principal) {
+    public ShoppingCart addProduct(@PathVariable int id, Principal principal) {
         try {
             String username = principal.getName();
             User user = userDao.getByUserName(username);
@@ -67,7 +67,8 @@ public class ShoppingCartController {
 
             int userId = user.getId();
 
-             shoppingCartDao.addProduct(userId, id);
+            return shoppingCartDao.addProduct(userId, id);
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseStatusException(
@@ -84,13 +85,13 @@ public class ShoppingCartController {
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
     @PutMapping("/products/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateProduct(@PathVariable int id, @RequestBody ShoppingCartItem item, Principal principal) {
+    public ShoppingCart updateProduct(@PathVariable int id, @RequestBody ShoppingCartItem item, Principal principal) {
         try {
             String username = principal.getName();
             User user = userDao.getByUserName(username);
             int userId = user.getId();
 
-            shoppingCartDao.updateQuantity(userId, id, item.getQuantity());
+           return shoppingCartDao.updateQuantity(userId, id, item.getQuantity());
         } catch (Exception e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -103,14 +104,15 @@ public class ShoppingCartController {
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart
     @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void clearCart(Principal principal) {
+    public ShoppingCart clearCart(Principal principal) {
         try {
             String username = principal.getName();
             User user = userDao.getByUserName(username);
             int userId = user.getId();
 
-            shoppingCartDao.clearCart(userId);
+            ShoppingCart emptyCart = shoppingCartDao.clearCart(userId);
+
+           return emptyCart;
         } catch (Exception e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
