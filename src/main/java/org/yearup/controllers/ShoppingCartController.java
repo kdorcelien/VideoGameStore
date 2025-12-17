@@ -85,7 +85,7 @@ public class ShoppingCartController {
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
     @PutMapping("/products/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ShoppingCart updateProduct(@PathVariable int id, @RequestBody ShoppingCartItem item, Principal principal) {
+    public ShoppingCart updateQuantity(@PathVariable int id, @RequestBody ShoppingCartItem item, Principal principal) {
         try {
             String username = principal.getName();
             User user = userDao.getByUserName(username);

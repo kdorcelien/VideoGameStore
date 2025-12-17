@@ -6,6 +6,8 @@ import org.yearup.data.ProfileDao;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
@@ -39,7 +41,9 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
     }
 
     @Override
-    public Profile getByIdLastName(int userId, String lastName) {
+    public List<Profile> getProfile(int userId, String lastName) {
+        List<Profile> profiles = new ArrayList<>();
+
         String sql = " SELECT * " +
                 " FROM profiles " +
                 "WHERE user_id = ? AND last_name LIKE ? ";
@@ -52,12 +56,14 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
             ResultSet row = statement.executeQuery();
 
             if (row.next()) {
-                return mapRow(row);
+                Profile profile = mapRow(row);
+                profiles.add(profile);
+
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return profiles;
     }
 
     @Override

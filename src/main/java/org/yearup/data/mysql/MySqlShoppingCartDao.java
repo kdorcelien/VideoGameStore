@@ -54,48 +54,20 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         return cart;
     }
 
-//    @Override
-//    public ShoppingCart addProduct(int userId, int productId) {
-//        String sql = " INSERT INTO shopping_cart(user_id, product_id, quantity) " +
-//                " VALUES (?, ?, 1) " +
-//                " ON DUPLICATE KEY UPDATE quantity = quantity + 1 ";
-//
-//        try (Connection connection = getConnection();
-//             PreparedStatement statement = connection.prepareStatement(sql))
-//        {
-//            statement.setInt(1, userId);
-//            statement.setInt(2, productId);
-//
-//           statement.executeUpdate();
-//
-//        }
-//        catch (SQLException e)
-//        {
-//            throw new RuntimeException(e);
-//        }
-//
-//        return getByUserId(userId);
-//    }
-
     @Override
     public ShoppingCart addProduct(int userId, int productId)
     {
-        String sqlCheck = """
-        SELECT quantity
-        FROM shopping_cart
-        WHERE user_id = ? AND product_id = ?
-    """;
+        String sqlCheck = " SELECT quantity " +
+       "FROM shopping_cart " +
+      " WHERE user_id = ? AND product_id = ? ";
 
-        String sqlInsert = """
-        INSERT INTO shopping_cart (user_id, product_id, quantity)
-        VALUES (?, ?, 1)
-    """;
+        String sqlInsert = " INSERT INTO shopping_cart (user_id, product_id, quantity) " +
+    " VALUES (?, ?, 1) ";
 
-        String sqlUpdate = """
-        UPDATE shopping_cart
-        SET quantity = quantity + 1
-        WHERE user_id = ? AND product_id = ?
-    """;
+        String sqlUpdate = "UPDATE shopping_cart " +
+        "SET quantity = quantity + 1 " +
+        " WHERE user_id = ? AND product_id = ? ";
+
 
         try (Connection conn = getConnection();
              PreparedStatement check = conn.prepareStatement(sqlCheck)) {
