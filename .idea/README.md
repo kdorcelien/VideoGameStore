@@ -59,6 +59,8 @@ Login
 
 Register
 
+---
+
 Response format:
 json
 {
