@@ -41,29 +41,28 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
     }
 
     @Override
-    public List<Profile> getProfile(int userId, String lastName) {
+    public Profile getProfile(int userId) {
         List<Profile> profiles = new ArrayList<>();
 
         String sql = " SELECT * " +
                 " FROM profiles " +
-                "WHERE user_id = ? AND last_name LIKE ? ";
+                "WHERE user_id = ? ";
 
-        try (Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(sql);
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
             statement.setInt(1, userId);
-            statement.setString(2, "%" + lastName + "%");
-
             ResultSet row = statement.executeQuery();
 
             if (row.next()) {
-                Profile profile = mapRow(row);
-                profiles.add(profile);
-
+                return mapRow(row);
             }
+
+            return null;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return profiles;
     }
 
     @Override
